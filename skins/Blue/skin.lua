@@ -90,6 +90,7 @@ skin.controls.textinput_indicator_color             = {0, 0, 0, 255}
 skin.controls.textinput_text_normal_color           = {0, 0, 0, 255}
 skin.controls.textinput_text_selected_color         = {255, 255, 255, 255}
 skin.controls.textinput_highlight_bar_color         = {51, 204, 255, 255}
+skin.controls.textinput_passwordmask                = '*'
 
 -- slider
 skin.controls.slider_bar_outline_color              = {220, 220, 220, 255}
@@ -921,9 +922,20 @@ function skin.DrawTextInput(object)
 	local textselectedcolor = skin.controls.textinput_text_selected_color
 	local highlightbarcolor = skin.controls.textinput_highlight_bar_color
 	local indicatorcolor = skin.controls.textinput_indicator_color
+	local passwordmode = object:GetPasswordMode()
+	local masksymbol = skin.controls.textinput_passwordmask  
 	
 	love.graphics.setColor(bodycolor)
 	love.graphics.rectangle("fill", x, y, width, height)
+	
+	if passwordmode then
+	    local maskedlines = {}
+	    for k,v in pairs(lines) do
+            maskedlines[k] = v
+        end
+        maskedlines[1] = string.rep(masksymbol, #maskedlines[1])
+        lines = maskedlines    
+	end	
 	
 	if alltextselected then
 		local bary = 0

@@ -51,6 +51,7 @@ function newobject:initialize()
 	self.showindicator = true
 	self.focus = false
 	self.multiline = false
+	self.passwordmode = false
 	self.vbar = false
 	self.hbar = false
 	self.alltextselected = false
@@ -1655,5 +1656,29 @@ function newobject:SetVisible(bool)
 	if not bool then
 		self.keydown = "none"
 	end
+	
+end
+
+--[[---------------------------------------------------------
+	- func: SetPasswordMode()
+	- desc: sets whether or not the textinput should act like
+		a password input feld. I.e. echo the input with '*'.
+		Is ignored in multiline mode.
+--]]---------------------------------------------------------
+function newobject:SetPasswordMode(bool)
+
+	self.passwordmode = bool
+	
+end
+
+--[[---------------------------------------------------------
+	- func: GetPasswordMode()
+	- desc: gets whether or not the textinput should act like
+		a password input feld. I.e. echo the input with '*'.
+		Is ignored in multiline mode.
+--]]---------------------------------------------------------
+function newobject:GetPasswordMode()
+
+	return self.passwordmode
 	
 end
