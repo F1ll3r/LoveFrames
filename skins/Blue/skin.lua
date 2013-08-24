@@ -922,20 +922,12 @@ function skin.DrawTextInput(object)
 	local textselectedcolor = skin.controls.textinput_text_selected_color
 	local highlightbarcolor = skin.controls.textinput_highlight_bar_color
 	local indicatorcolor = skin.controls.textinput_indicator_color
-	local passwordmode = object:GetPasswordMode()
-	local masksymbol = skin.controls.textinput_passwordmask  
+	local password = object:GetPasswordMode() 
 	
 	love.graphics.setColor(bodycolor)
 	love.graphics.rectangle("fill", x, y, width, height)
 	
-	if passwordmode then
-	    local maskedlines = {}
-	    for k,v in pairs(lines) do
-            maskedlines[k] = v
-        end
-        maskedlines[1] = string.rep(masksymbol, #maskedlines[1])
-        lines = maskedlines    
-	end	
+
 	
 	if alltextselected then
 		local bary = 0
@@ -1018,15 +1010,25 @@ function skin.DrawTextInput(object)
 	else
 		love.graphics.setColor(textnormalcolor)
 	end
-	
-	if multiline then
-		for i=1, #lines do
-			love.graphics.print(lines[i], textx, texty + theight * i - theight)
-		end
-	else
-		love.graphics.print(lines[1], textx, texty)
-	end
-		
+        if multiline then
+            for i=1, #lines do
+                if password then
+                    local linetext = lines[i]
+                    lintext = linetext:gsub(".", "*")
+                    love.graphics.print(lintext, textx, texty + theight * i - theight)
+                else
+                    love.graphics.print(lines[i], textx, texty + theight * i - theight)
+                end
+            end
+        else
+        if password then
+            local linetext = lines[1]
+            lintext = linetext:gsub(".", "*")
+            love.graphics.print(lintext, textx, texty)
+        else
+            love.graphics.print(lines[1], textx, texty)
+        end
+    end		
 end
 
 --[[---------------------------------------------------------

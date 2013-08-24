@@ -816,6 +816,7 @@ function newobject:UpdateIndicator()
 	local theight = self.font:getHeight("a")
 	local offsetx = self.offsetx
 	local multiline = self.multiline
+	local password = self.passwordmode
 	
 	if indincatortime < time then
 		if self.showindicator then
@@ -832,9 +833,13 @@ function newobject:UpdateIndicator()
 	
 	local width = 0
 	
-	for i=1, indicatornum do
-		width = width + self.font:getWidth(text:sub(i, i))
-	end
+    for i=1, indicatornum do
+        if password then
+            width = width + self.font:getWidth("*")
+        else
+            width = width + self.font:getWidth(text:sub(i, i))
+        end
+    end
 	
 	if multiline then
 		self.indicatorx = self.textx + width
