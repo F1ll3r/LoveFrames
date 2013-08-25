@@ -90,7 +90,6 @@ skin.controls.textinput_indicator_color             = {0, 0, 0, 255}
 skin.controls.textinput_text_normal_color           = {0, 0, 0, 255}
 skin.controls.textinput_text_selected_color         = {255, 255, 255, 255}
 skin.controls.textinput_highlight_bar_color         = {51, 204, 255, 255}
-skin.controls.textinput_passwordmask                = '*'
 
 -- slider
 skin.controls.slider_bar_outline_color              = {220, 220, 220, 255}
@@ -927,14 +926,17 @@ function skin.DrawTextInput(object)
 	love.graphics.setColor(bodycolor)
 	love.graphics.rectangle("fill", x, y, width, height)
 	
-
-	
 	if alltextselected then
 		local bary = 0
 		if multiline then
 			for i=1, #lines do
-				local twidth = font:getWidth(lines[i])
-				if twidth == 0 then
+				local twidth = 0
+                if password then
+                    twidth = font:getWidth(lines[i]:gsub(".", "*"))
+				else
+				    twidth = font:getWidth(lines[i])
+                end
+                if twidth == 0 then
 					twidth = 5
 				end
 				love.graphics.setColor(highlightbarcolor)
@@ -942,8 +944,13 @@ function skin.DrawTextInput(object)
 				bary = bary + theight
 			end
 		else
-			local twidth = font:getWidth(text)
-			love.graphics.setColor(highlightbarcolor)
+		    local twidth = 0
+			if password then
+                twidth = font:getWidth(text:gsub(".", "*"))
+			else
+			    twidth = font:getWidth(text)
+			end
+            love.graphics.setColor(highlightbarcolor)
 			love.graphics.rectangle("fill", textx, texty, twidth, theight)
 		end
 	end

@@ -524,6 +524,7 @@ function newobject:RunKey(key, unicode)
 	local initialtext = self:GetText()
 	local ontextchanged = self.OnTextChanged
 	local onenter = self.OnEnter
+	local password = self.passwordmode
 	
 	self.unicode = unicode
 	
@@ -622,7 +623,12 @@ function newobject:RunKey(key, unicode)
 					end
 				end
 			end
-			local cwidth = font:getWidth(text:sub(#text))
+			local cwidth = 0
+			if password then
+			    cwidth = font:getWidth("*")
+			else
+			    cwidth = font:getWidth(text:sub(#text))
+			end
 			if self.offsetx > 0 then
 				self.offsetx = self.offsetx - cwidth
 			elseif self.offsetx < 0 then
@@ -751,8 +757,16 @@ function newobject:RunKey(key, unicode)
 			curline = lines[line]
 			text = curline
 			if not multiline then
-				local twidth = font:getWidth(text)
-				local cwidth = font:getWidth(ckey)
+			    -- move the text to the left side
+			    local twidth = 0
+			    local cwidth = 0
+			    if password then
+			        twidth = font:getWidth(text:gsub(".", "*"))
+				    cwidth = font:getWidth("*")
+			    else
+			        twidth = font:getWidth(text)
+				    cwidth = font:getWidth(ckey)
+			    end
 				-- swidth - 1 is for the "-" character
 				if (twidth + textoffsetx) >= (swidth - 1) then
 					self.offsetx = self.offsetx + cwidth
@@ -905,6 +919,7 @@ function newobject:GetTextCollisions(x, y)
 	local vbar = self.vbar
 	local hbar = self.hbar
 	local multiline = self.multiline
+	local password = self.passwordmode
 	
 	if multiline then
 		local theight = self.font:getHeight("a")
@@ -930,7 +945,12 @@ function newobject:GetTextCollisions(x, y)
 			local line = self.line
 			local curline = lines[line]
 			for i=1, #curline do
-				local width = font:getWidth(curline:sub(i, i))
+			    local width = 0
+			    if password then
+			        width = font:getWidth("*")
+			    else
+			        width = font:getWidth(curline:sub(i, i))
+			    end
 				local height = font:getHeight(curline:sub(i, i))
 				local tx = self.textx + xpos
 				local ty = self.texty
@@ -960,7 +980,12 @@ function newobject:GetTextCollisions(x, y)
 		end
 	else
 		for i=1, #text do
-			local width = font:getWidth(text:sub(i, i))
+		    local width = 0
+		    if password then
+			    width = font:getWidth("*")
+			else
+			    width = font:getWidth(text:sub(i, i))
+			end
 			local height = font:getHeight(text:sub(i, i))
 			local tx = self.textx + xpos
 			local ty = self.texty
@@ -1668,7 +1693,6 @@ end
 	- func: SetPasswordMode()
 	- desc: sets whether or not the textinput should act like
 		a password input feld. I.e. echo the input with '*'.
-		Is ignored in multiline mode.
 --]]---------------------------------------------------------
 function newobject:SetPasswordMode(bool)
 
@@ -1680,7 +1704,6 @@ end
 	- func: GetPasswordMode()
 	- desc: gets whether or not the textinput should act like
 		a password input feld. I.e. echo the input with '*'.
-		Is ignored in multiline mode.
 --]]---------------------------------------------------------
 function newobject:GetPasswordMode()
 
